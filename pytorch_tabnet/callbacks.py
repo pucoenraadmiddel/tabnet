@@ -5,6 +5,7 @@ import numpy as np
 from dataclasses import dataclass, field
 from typing import List, Any
 import warnings
+import wandb
 
 
 class Callback:
@@ -221,6 +222,10 @@ class History(Callback):
         self.total_time = int(time.time() - self.start_time)
         msg += f"|  {str(datetime.timedelta(seconds=self.total_time)) + 's':<6}"
         print(msg)
+        wandb.log(self.epoch_metrics)
+        if self.verbose == 1:
+            print('Logging to wandb', str(self.epoch_metrics))
+
 
     def on_batch_end(self, batch, logs=None):
         batch_size = logs["batch_size"]

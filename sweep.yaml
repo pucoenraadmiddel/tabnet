@@ -1,0 +1,40 @@
+program: train.py
+method: bayes
+metric:
+  goal: minimize
+  name: "valid_rmse"
+parameters:
+  virtual_batch_size:
+    max: 1024
+    min: 64
+    distribution: int_uniform
+  max_epochs:
+    value: 1000
+  batch_size:
+    max: 5048
+    min: 128
+    distribution: int_uniform
+  patience:
+    max: 20
+    min: 10
+    distribution: int_uniform
+  n_steps:
+    max: 10
+    min: 3
+    distribution: int_uniform
+  factor:
+    max: 0.2
+    min: 0.05
+    distribution: uniform
+  n_d:
+    max: 512
+    min: 32
+    distribution: int_uniform
+  n_a:
+    max: 512
+    min: 32
+    distribution: int_uniform
+  lr:
+    max: 0.05
+    min: 0.005
+    distribution: uniform
