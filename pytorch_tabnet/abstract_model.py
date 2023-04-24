@@ -540,12 +540,22 @@ class TabModel(BaseEstimator):
             scores = self._predict_batch(X)
             list_y_true.append(y)
             list_y_score.append(scores)
-
+        
+        # Convert the predictions and true values to their original domain
         y_true, scores = self.stack_batches(list_y_true, list_y_score)
+        y_true_orig, scores_orig = self.convert_to_original_domain(y_true, scores)
+
 
         metrics_logs = self._metric_container_dict[name](y_true, scores)
+
+        # Compute metrics for the original domain values
+        metrics_logs_orig = self._metric_container_dict[name](y_true_orig, scores_orig)
+
+        # Combine the metric logs
+        combined_metrics_logs = self.combine_metric_logs(metrics_logs, metrics_logs_orig)
+
         self.network.train()
-        self.history.epoch_metrics.update(metrics_logs)
+        self.history.epoch_metrics.update(combined_metrics_logs)
         return
 
     def _predict_batch(self, X):
@@ -741,6 +751,18 @@ class TabModel(BaseEstimator):
 
     def _update_network_params(self):
         self.network.virtual_batch_size = self.virtual_batch_size
+
+    def convert_to_original_domain(self, y_true, scores):
+        y_true_orig = np.expm1(y_true)
+        scores_orig = np.expm1(scores)
+        return y_true_orig, scores_orig
+
+    def combine_metric_logs(self, metrics_logs, metrics_logs_orig):
+        combined_metrics_logs = {}
+        for key, value in metrics_logs.items():
+            combined_metrics_logs[key] = value
+            combined_metrics_logs[f"orig_{key}"] = metrics_logs_orig[key]
+        return combined_metrics_logs
 
     @abstractmethod
     def update_fit_params(self, X_train, y_train, eval_set, weights):

@@ -107,16 +107,19 @@ def main(opt):
     clf = TabNetRegressor(n_d=opt.n_d,
                           n_a=opt.n_a,
                           n_steps=opt.n_steps,
-                          optimizer_params=dict(lr=opt.lr),
-                          scheduler_params={"factor": opt.factor, "patience": opt.patience},
-                        #   scheduler_fn=torch.optim.lr_scheduler.ReduceLROnPlateau,
+                          optimizer_params=dict(lr=opt.lr,
+                                                weight_decay=opt.weight_decay,
+                                                # beta_1=opt.beta_1,
+                                                # beta_2=opt.beta_2,
+                                                ),
+                          scheduler_fn=torch.optim.lr_scheduler.ReduceLROnPlateau,
+                          scheduler_params={"factor": opt.factor, 
+                                            "patience": opt.patience},
                             cat_idxs=cat_idxs,
                             cat_dims=cat_dims,  
-                            verbose=1,     
-                            device_name = DEVICE
-                                   
-                          
-    )
+                            verbose=opt.verbose,     
+                            device_name = DEVICE     
+                        )
     
     clf.fit(X_train=X_all.values[train_indices],
             y_train=y_all[train_indices],
@@ -131,8 +134,13 @@ def main(opt):
             virtual_batch_size=opt.virtual_batch_size,)
     
     
-    saving_path_name = "./tabnet_model"
+    saving_path_name = f"./models/tabnet_model_{wandb.run.id}"
     saved_filepath = clf.save_model(saving_path_name)
+
+    #Save as artifact on weights and biases
+    artifact = wandb.Artifact('TabNet_model', type='model')
+    artifact.add_file(saving_path_name)
+    wandb.run.log_artifact(artifact)
     
     # else:
     loaded_preds = clf.predict(X_test)
@@ -152,6 +160,12 @@ if __name__ == '__main__':
     parser.add_argument('--patience', default=10, type=float)
     parser.add_argument('--batch_size', default=1024, type=int)
     parser.add_argument('--virtual_batch_size', default=128, type=int)
+    parser.add_argument('--weight_decay', default=1e-5, type=float)
+    parser.add_argument('--beta_1', default=0.9, type=float)
+    parser.add_argument('--beta_2', default=0.999, type=float)
+    parser.add_argument('--seed', default=42, type=int)
+    parser.add_argument('--verbose', default=1, type=int)
+
     
     opt = parser.parse_args()
     

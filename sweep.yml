@@ -4,6 +4,44 @@ metric:
   goal: minimize
   name: "valid_rmse"
 parameters:
+  n_d:
+    values: [8, 16, 32, 64, 128, 256, 512, 1024]
+  n_a:
+    values: [8, 16, 32, 64, 128, 256, 512, 1024]
+  n_steps:
+    max: 20
+    min: 2
+    distribution: int_uniform
+  gamma:
+    max: 2.00
+    min: 1.00
+    distribution: uniform
+  lambda_sparse:
+    max: 1.00
+    min: 0.00
+    distribution: uniform
+  #Optimizer parameters:
+  lr:
+    max: 0.05
+    min: 0.0025
+    distribution: uniform
+  epslion:
+    max: 0.01
+    min: 0.00001
+    distribution: uniform
+  weight_decay:
+    max: 0.01
+    min: 0.0001
+    distribution: uniform
+  beta_1:
+    max: 0.99
+    min: 0.85
+    distribution: uniform
+  beta_2:
+    max: 0.999
+    min: 0.95
+    distribution: uniform
+  #Scheduler parameters:
   virtual_batch_size:
     max: 1024
     min: 64
@@ -18,23 +56,10 @@ parameters:
     max: 20
     min: 10
     distribution: int_uniform
-  n_steps:
-    max: 10
-    min: 3
-    distribution: int_uniform
   factor:
-    max: 0.2
-    min: 0.05
+    max: 0.5
+    min: 0.02
     distribution: uniform
-  n_d:
-    max: 512
-    min: 32
-    distribution: int_uniform
-  n_a:
-    max: 512
-    min: 32
-    distribution: int_uniform
-  lr:
-    max: 0.05
-    min: 0.005
-    distribution: uniform
+
+seed: 42
+Timeout: 28800

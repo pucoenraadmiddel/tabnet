@@ -200,6 +200,9 @@ class History(Callback):
         self.history = {"loss": []}
         self.history.update({"lr": []})
         self.history.update({name: [] for name in self.trainer._metrics_names})
+        for key in list(self.history.keys()):
+            self.history[f"orig_{key}"] = self.history[key]
+
         self.start_time = logs["start_time"]
         self.epoch_loss = 0.0
 
