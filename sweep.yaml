@@ -19,22 +19,22 @@ parameters:
     min: 10
     distribution: int_uniform
   n_steps:
-    max: 10
-    min: 3
+    max: 16
+    min: 2
     distribution: int_uniform
   factor:
-    max: 0.2
-    min: 0.05
+    max: 0.5
+    min: 0.02
     distribution: uniform
   n_d:
-    max: 512
-    min: 32
+    max: 256
+    min: 12
     distribution: int_uniform
   n_a:
-    max: 512
-    min: 32
+    max: 256
+    min: 12
     distribution: int_uniform
   lr:
     max: 0.05
-    min: 0.005
+    min: 0.0025
     distribution: uniform
