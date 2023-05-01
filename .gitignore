@@ -146,3 +146,4 @@ dmypy.json
 
 wandb/
 *.parquet
+models/

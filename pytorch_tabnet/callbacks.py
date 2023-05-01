@@ -226,7 +226,7 @@ class History(Callback):
         msg += f"|  {str(datetime.timedelta(seconds=self.total_time)) + 's':<6}"
         print(msg)
         wandb.log(self.epoch_metrics)
-        if self.verbose == 1:
+        if self.verbose > 1:
             print('Logging to wandb', str(self.epoch_metrics))
 
 

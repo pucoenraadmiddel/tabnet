@@ -83,8 +83,8 @@ cat_dims = [len(train[c].cat.categories) for c in categorical_columns if c in tr
 y_dim = 1
 
 X_all_cats = X_all[categorical_columns]
-# make a list of the number of unique values in each categorical column
 
+# make a list of the number of unique values in each categorical column
 catmaxlist = [X_all_cats[col].nunique() for col in X_all_cats.columns]
 
 # define your embedding sizes : here just a random choice
@@ -99,7 +99,7 @@ DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 print("Using {}".format(DEVICE))
 
 def main(opt):
-    wandb.init(project="tabnet_all_rossmann", config=opt)
+    wandb.init(project="tabnet_rossmann_mse", config=opt)
     opt = wandb.config
     
     print(opt)
@@ -108,13 +108,13 @@ def main(opt):
                           n_a=opt.n_a,
                           n_steps=opt.n_steps,
                           optimizer_params=dict(lr=opt.lr,
-                                                weight_decay=opt.weight_decay,
+                                                # weight_decay=opt.weight_decay,``
                                                 # beta_1=opt.beta_1,
                                                 # beta_2=opt.beta_2,
                                                 ),
                           scheduler_fn=torch.optim.lr_scheduler.ReduceLROnPlateau,
-                          scheduler_params={"factor": opt.factor, 
-                                            "patience": opt.patience},
+                        #   scheduler_params={"factor": opt.factor, 
+                                            # "patience": opt.patience},
                             cat_idxs=cat_idxs,
                             cat_dims=cat_dims,  
                             verbose=opt.verbose,     
@@ -135,11 +135,11 @@ def main(opt):
     
     
     saving_path_name = f"./models/tabnet_model_{wandb.run.id}"
-    saved_filepath = clf.save_model(saving_path_name)
+    clf.save_model(saving_path_name)
 
     #Save as artifact on weights and biases
     artifact = wandb.Artifact('TabNet_model', type='model')
-    artifact.add_file(saving_path_name)
+    artifact.add_file(saving_path_name+".zip")
     wandb.run.log_artifact(artifact)
     
     # else:
@@ -155,14 +155,14 @@ if __name__ == '__main__':
     parser.add_argument('--n_a', default=64, type=int)
     parser.add_argument('--n_steps', default=5, type=int)
     parser.add_argument('--max_epochs', default=5, type=int)
-    parser.add_argument('--lr', default=0.02, type=float)
-    parser.add_argument('--factor', default=0.1, type=float)
-    parser.add_argument('--patience', default=10, type=float)
+    parser.add_argument('--lr', default=0.01, type=float)
+    # parser.add_argument('--factor', default=0.1, type=float)
+    # parser.add_argument('--patience', default=10, type=float)
     parser.add_argument('--batch_size', default=1024, type=int)
     parser.add_argument('--virtual_batch_size', default=128, type=int)
-    parser.add_argument('--weight_decay', default=1e-5, type=float)
-    parser.add_argument('--beta_1', default=0.9, type=float)
-    parser.add_argument('--beta_2', default=0.999, type=float)
+    # parser.add_argument('--weight_decay', default=1e-5, type=float)
+    # parser.add_argument('--beta_1', default=0.9, type=float)
+    # parser.add_argument('--beta_2', default=0.999, type=float)
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--verbose', default=1, type=int)
 
