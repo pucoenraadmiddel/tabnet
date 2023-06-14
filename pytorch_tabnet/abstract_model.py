@@ -549,8 +549,8 @@ class TabModel(BaseEstimator):
         metrics_logs = self._metric_container_dict[name](y_true, scores)
 
         # Compute metrics for the original domain values
-        metrics_logs_orig = self._metric_container_dict[name](y_true_orig, scores_orig)
-
+        metrics_logs_orig = self._metric_container_dict[name](y_true_orig, scores_orig)     
+        
         # Combine the metric logs
         combined_metrics_logs = self.combine_metric_logs(metrics_logs, metrics_logs_orig)
 
@@ -753,10 +753,10 @@ class TabModel(BaseEstimator):
         self.network.virtual_batch_size = self.virtual_batch_size
 
     def convert_to_original_domain(self, y_true, scores):
-        # y_true_orig = np.expm1(y_true)
-        # scores_orig = np.expm1(scores)
-        y_true_orig = y_true
-        scores_orig = scores
+        y_true_orig = np.expm1(y_true)
+        scores_orig = np.expm1(scores)
+        # y_true_orig = y_true
+        # scores_orig = scores
         return y_true_orig, scores_orig
 
     def combine_metric_logs(self, metrics_logs, metrics_logs_orig):
