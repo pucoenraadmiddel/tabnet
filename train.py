@@ -10,7 +10,7 @@ import random
 import argparse
 
 print('Reading the data...')
-train = pd.read_parquet(r'/home/coenraadmiddel/Documents/RossmannStoreSales/TabNet/tabnet/train_processed.parquet')
+train = pd.read_parquet(r'/home/coenraadmiddel/Documents/Rossmann Store Sales/train_processed.parquet')
 print("Read:", train.shape)
 
 
